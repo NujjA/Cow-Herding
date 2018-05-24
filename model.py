@@ -30,10 +30,10 @@ class CHModel(Model):
         # Place random agents
         for i in range(self.number_random_agents):
             a = RandomAgent(i, self)
+            self.schedule.add(a)
             cell_location = self.grid.find_empty()
             self.grid.place_agent(a, cell_location)
-        
-        
+
 
     def step(self):
         self.schedule.step()

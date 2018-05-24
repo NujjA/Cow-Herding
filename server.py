@@ -30,5 +30,5 @@ def agent_portrayal(agent):
 grid = CanvasGrid(agent_portrayal, 8, 8, 500, 500)
 server = ModularServer(CHModel,
                        [grid],
-                       "Wall Model",
-                       {"N": 10, "width": 8, "height": 8})
+                       "Cow Herding Model",
+                       {"N": 12, "width": 8, "height": 8})

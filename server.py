@@ -3,6 +3,7 @@ from mesa.visualization.ModularVisualization import ModularServer
 from model import CHModel
 from random_agent import RandomAgent
 from wall import WallAgent
+from cow_agent import CowAgent
 import random
 
 def agent_portrayal(agent):
@@ -24,6 +25,11 @@ def agent_portrayal(agent):
         portrayal["Color"] = "blue"
         portrayal["r"] = .5
         
+    elif type(agent) is CowAgent:
+        portrayal["Shape"] = "circle"
+        portrayal["Layer"] = 0
+        portrayal["Color"] = "black"
+        portrayal["r"] = .5
 
     return portrayal
 
@@ -31,4 +37,4 @@ grid = CanvasGrid(agent_portrayal, 8, 8, 500, 500)
 server = ModularServer(CHModel,
                        [grid],
                        "Cow Herding Model",
-                       {"N": 12, "width": 8, "height": 8})
+                       {"N": 14, "width": 8, "height": 8})

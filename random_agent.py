@@ -1,5 +1,4 @@
 from mesa import Agent, Model
-#from mesa.time import RandomActivation
 import random
 import movement_control
 
@@ -14,11 +13,7 @@ class RandomAgent(Agent):
         self.move()
 
     def move(self):
-        #possible_steps = self.model.grid.get_neighborhood(
-        #    self.pos,
-        #    moore=True,
-        #    include_center=True)
         possible_steps = movement_control.find_empty_location(self.pos, self.model)
         new_position = random.choice(possible_steps)
-        print(self.unique_id, " moving from ", self.pos, " to ", new_position)
+        #print(self.unique_id, " moving from ", self.pos, " to ", new_position)
         self.model.grid.move_agent(self, new_position)

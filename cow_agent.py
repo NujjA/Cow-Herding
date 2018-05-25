@@ -3,6 +3,7 @@ import random
 import movement_control
 from wall import WallAgent
 from random_agent import RandomAgent
+from plan_agent import PlanAgent
 import numpy as np
 
 class CowAgent(Agent):
@@ -85,6 +86,8 @@ class CowAgent(Agent):
                 weight = self.AGENTWEIGHT
             if type(agent) is CowAgent:
                 weight = self.COWWEIGHT
+            if type(agent) is PlanAgent:
+                weight = self.AGENTWEIGHT
         #print("weight is ", weight)
         return weight
         

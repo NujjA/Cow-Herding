@@ -4,6 +4,7 @@ from model import CHModel
 from random_agent import RandomAgent
 from wall import WallAgent
 from cow_agent import CowAgent
+from plan_agent import PlanAgent
 import random
 
 def agent_portrayal(agent):
@@ -29,6 +30,12 @@ def agent_portrayal(agent):
         portrayal["Shape"] = "circle"
         portrayal["Layer"] = 0
         portrayal["Color"] = "black"
+        portrayal["r"] = .5
+    
+    elif type(agent) is PlanAgent:
+        portrayal["Shape"] = "circle"
+        portrayal["Layer"] = 0
+        portrayal["Color"] = "purple"
         portrayal["r"] = .5
 
     return portrayal

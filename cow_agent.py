@@ -1,9 +1,6 @@
 from mesa import Agent, Model, space
 import random
-import movement_control
-from wall import WallAgent
-from random_agent import RandomAgent
-from plan_agent import PlanAgent
+import movement_control, cow_methods
 import numpy as np
 
 class CowAgent(Agent):
@@ -41,11 +38,11 @@ class CowAgent(Agent):
         best_locations = self.calculate_weights(possible_steps)
         
         #randomly pick from maximum weight cells
-        new_position = random.choice(best_locations)
+        if best_locations:
+            new_position = random.choice(best_locations)
+        else:
+            new_position = self.pos # don't move if there is nowhere to go
         
-        #TODO: remove this when cow behavior finished
-        #possible_steps = movement_control.find_empty_location(self.pos, self.model)
-        #new_position = random.choice(possible_steps)
         return new_position
         
     def calculate_weights(self, possible_steps):
@@ -79,15 +76,16 @@ class CowAgent(Agent):
             weight = self.EMPTYWEIGHT
         else:
             agent = self.model.grid.get_cell_list_contents(cell)[0]
-            print("the cell contains", type(agent))
-            if type(agent) is WallAgent:
-                weight = self.OBSTACLEWEIGHT
-            if type(agent) is RandomAgent:
-                weight = self.AGENTWEIGHT
-            if type(agent) is CowAgent:
-                weight = self.COWWEIGHT
-            if type(agent) is PlanAgent:
-                weight = self.AGENTWEIGHT
+            weight = cow_methods.determine_weight(agent)
+            #print("the cell contains", type(agent))
+            #if type(agent) is WallAgent:
+            #    weight = self.OBSTACLEWEIGHT
+            #if type(agent) is RandomAgent:
+            #    weight = self.AGENTWEIGHT
+            #if type(agent) is CowAgent:
+            #    weight = self.COWWEIGHT
+            #if type(agent) is PlanAgent:
+            #    weight = self.AGENTWEIGHT
         #print("weight is ", weight)
         return weight
         

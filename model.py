@@ -21,9 +21,9 @@ class CHModel(Model):
         self.wallLocations = [(1,5), (1,6), (1,7), (2,7), (3,7), (4,7), (5,7), (6,7), (6,6), (6,5)]
         self.goalState = [(2,5), (3,5), (4,5), (5,5), (2,6), (3,6), (4,6), (5,6)]
         self.goalTarget = (3,5) #corral "entrance" that plan agents herd towards
-        self.cow_agent_list = []
+        #self.cow_agent_list = []
         
-        self.number_random_agents = 0
+        self.number_random_agents = 2
         self.number_cow_agents = 4
         self.number_plan_agents = 2
         
@@ -48,7 +48,7 @@ class CHModel(Model):
             c = CowAgent(self.id_count, self)
             self.id_count += 1
             self.schedule.add(c)
-            self.cow_agent_list.append(c)
+            #self.cow_agent_list.append(c)
             cell_location = self.grid.find_empty()
             self.grid.place_agent(c, cell_location)
 

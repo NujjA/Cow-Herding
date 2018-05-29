@@ -105,6 +105,7 @@ class CHModel(Model):
     def update_score(self):
         self.current_cow_count = cow_methods.cows_in_goal(self, self.goalState)
         self.total_cow_count += self.current_cow_count
+        print(self.total_cow_count, self.current_cow_count, self.schedule.time)
         self.score = self.total_cow_count / self.schedule.time
         
         

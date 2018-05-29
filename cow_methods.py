@@ -34,8 +34,10 @@ def cows_in_goal(model, goalState):
     ''' The score of the current timestep '''
     cow_count = 0
     cell_contents = model.grid.get_cell_list_contents(goalState)
+    print(cell_contents)
     if len(cell_contents) > 1:
         for agent in cell_contents:
             if agent.__class__.__name__ is "CowAgent":
                 cow_count += 1
     return cow_count
+

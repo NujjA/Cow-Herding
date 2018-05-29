@@ -6,6 +6,7 @@ from wall import WallAgent
 from cow_agent import CowAgent
 from plan_agent import PlanAgent
 from montecarlo import MonteCarloAgent
+from td_agent import TDAgent
 import random
 
 def agent_portrayal(agent):

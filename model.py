@@ -6,7 +6,11 @@ from wall import WallAgent
 from random_agent import RandomAgent
 from plan_agent import PlanAgent
 from cow_agent import CowAgent
+from montecarlo import MonteCarloAgent
+from td_agent import TDAgent
 import cow_methods
+import numpy as np
+import rl_methods
 
 class CHModel(Model):
     """A model with some number of agents."""
@@ -18,9 +22,11 @@ class CHModel(Model):
         
         
         self.id_count = 0 #to assign each agent a unique ID
+        self.max_timesteps = 500 #max timesteps for each episode
         
         # To keep score
         self.total_cow_count = 0.0
+        self.current_cow_count = 0.0
         self.score = 0.0
         #self.cow_agent_list = []
         
@@ -28,11 +34,12 @@ class CHModel(Model):
         self.wallLocations = [(1,5), (1,6), (1,7), (2,7), (3,7), (4,7), (5,7), (6,7), (6,6), (6,5)]
         self.goalState = [(2,5), (3,5), (4,5), (5,5), (2,6), (3,6), (4,6), (5,6)]
         self.goalTarget = (3,5) #corral "entrance" that plan agents herd towards
+        self.state = None # encode state at each timestep
         
-        self.number_random_agents = 2
+        self.number_random_agents = 0
         self.number_cow_agents = 4
-        self.number_plan_agents = 2
-        self.number_monte_carlo_agents = 0
+        self.number_plan_agents = 0
+        self.number_monte_carlo_agents = 1
         self.number_td_agents = 0
         
         # Place wall agents
@@ -69,7 +76,7 @@ class CHModel(Model):
             self.grid.place_agent(p, cell_location)
             
         # Place monte carlo agents
-        for i in range(self.number_plan_agents):
+        for i in range(self.number_monte_carlo_agents):
             m = MonteCarloAgent(self.id_count, self)
             self.id_count += 1
             self.schedule.add(m)
@@ -77,7 +84,7 @@ class CHModel(Model):
             self.grid.place_agent(m, cell_location)
             
         # Place TD agents
-        for i in range(self.number_plan_agents):
+        for i in range(self.number_td_agents):
             t = TDAgent(self.id_count, self)
             self.id_count += 1
             self.schedule.add(t)
@@ -85,14 +92,19 @@ class CHModel(Model):
             self.grid.place_agent(t, cell_location)
             
     def step(self):
-        self.schedule.step()
-        self.update_score()
-        #print("the current step is ", self.schedule.time)
-        print("the current score is ", self.score)
+        self.state = rl_methods.encode_state(self.grid)
+        if self.schedule.time < self.max_timesteps:
+            self.schedule.step()
+            self.update_score()
+            #print("the current step is ", self.schedule.time)
+            print(np.matrix(self.state))
+            print("the current score is ", self.score)
+        else:
+            print("the final score is ", self.score)
 
     def update_score(self):
-        current_cows = cow_methods.cows_in_goal(self, self.goalState)
-        self.total_cow_count += current_cows
+        self.current_cow_count = cow_methods.cows_in_goal(self, self.goalState)
+        self.total_cow_count += self.current_cow_count
         self.score = self.total_cow_count / self.schedule.time
         
         

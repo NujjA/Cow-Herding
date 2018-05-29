@@ -1,7 +1,7 @@
 from mesa import Agent, Model
-#import random
-#import movement_control
-#import numpy as np
+import random
+import movement_control
+import numpy as np
 
 
 class MonteCarloAgent(Agent):

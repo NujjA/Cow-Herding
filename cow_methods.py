@@ -24,6 +24,10 @@ def determine_weight(agent):
         weight = COWWEIGHT
     if agent.__class__.__name__ is "PlanAgent":
         weight = AGENTWEIGHT
+    if agent.__class__.__name__ is "MonteCarloAgent":
+        weight = AGENTWEIGHT
+    if agent.__class__.__name__ is "TDAgent":
+        weight = AGENTWEIGHT
     return weight
 
 def cows_in_goal(model, goalState):

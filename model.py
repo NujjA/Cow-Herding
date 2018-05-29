@@ -32,6 +32,8 @@ class CHModel(Model):
         self.number_random_agents = 2
         self.number_cow_agents = 4
         self.number_plan_agents = 2
+        self.number_monte_carlo_agents = 0
+        self.number_td_agents = 0
         
         # Place wall agents
         for i in range(len(self.wallLocations)):
@@ -65,6 +67,22 @@ class CHModel(Model):
             self.schedule.add(p)
             cell_location = self.grid.find_empty()
             self.grid.place_agent(p, cell_location)
+            
+        # Place monte carlo agents
+        for i in range(self.number_plan_agents):
+            m = MonteCarloAgent(self.id_count, self)
+            self.id_count += 1
+            self.schedule.add(m)
+            cell_location = self.grid.find_empty()
+            self.grid.place_agent(m, cell_location)
+            
+        # Place TD agents
+        for i in range(self.number_plan_agents):
+            t = TDAgent(self.id_count, self)
+            self.id_count += 1
+            self.schedule.add(t)
+            cell_location = self.grid.find_empty()
+            self.grid.place_agent(t, cell_location)
             
     def step(self):
         self.schedule.step()

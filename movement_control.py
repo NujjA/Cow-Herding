@@ -33,22 +33,22 @@ def get_distance(grid, pos_1, pos_2):
 
 def is_greater_x(pos_1, pos_2):
     """ True if position 1 has a bigger x value than position 2"""
-    print("comparing ", pos_1, pos_2)
+    #print("comparing ", pos_1, pos_2)
     return pos_1[0] > pos_2[0]
     
 def is_smaller_x(pos_1, pos_2):
     """ True if position 1 has a smaller x value than position 2"""
-    print("comparing ", pos_1, pos_2)
+    #print("comparing ", pos_1, pos_2)
     return pos_1[0] < pos_2[0]
     
 def is_greater_y(pos_1, pos_2):
     """ True if position 1 has a bigger y value than position 2"""
-    print("comparing ", pos_1, pos_2)
+    #print("comparing ", pos_1, pos_2)
     return pos_1[1] > pos_2[1]
     
 def is_smaller_y(pos_1, pos_2):
     """ True if position 1 has a smaller y value than position 2"""
-    print("comparing ", pos_1, pos_2)
+    #print("comparing ", pos_1, pos_2)
     return pos_1[1] < pos_2[1]
 
 def move_towards(agent, target_pos):
@@ -81,5 +81,5 @@ def move_towards(agent, target_pos):
     # randomly choose one of the empty locations
     if empty_locations:
         new_position = random.choice(empty_locations)
-        print(agent.unique_id, " moving towards")
+        #print(agent.unique_id, " moving towards")
         agent.model.grid.move_agent(agent, new_position)

@@ -5,6 +5,7 @@ from random_agent import RandomAgent
 from wall import WallAgent
 from cow_agent import CowAgent
 from plan_agent import PlanAgent
+from montecarlo import MonteCarloAgent
 import random
 
 def agent_portrayal(agent):
@@ -36,6 +37,18 @@ def agent_portrayal(agent):
         portrayal["Shape"] = "circle"
         portrayal["Layer"] = 0
         portrayal["Color"] = "purple"
+        portrayal["r"] = .5
+
+    elif type(agent) is MonteCarloAgent:
+        portrayal["Shape"] = "circle"
+        portrayal["Layer"] = 0
+        portrayal["Color"] = "green"
+        portrayal["r"] = .5
+        
+    elif type(agent) is TDAgent:
+        portrayal["Shape"] = "circle"
+        portrayal["Layer"] = 0
+        portrayal["Color"] = "orange"
         portrayal["r"] = .5
 
     return portrayal

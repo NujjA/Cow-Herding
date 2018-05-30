@@ -1,6 +1,7 @@
 from model import CHModel
 import movement_control
 from collections import defaultdict
+import movement_control
 
 episodes = 3
 steps = 100
@@ -10,6 +11,7 @@ cow_agents = 4
 plan_agents = 0
 monte_carlo_agents = 1
 td_agents = 0
+nA = len(movement_control.possible_action_space)
 
 MC_Q_values = [] # Save Q values so MC agents can access each episode
 for agent in range(monte_carlo_agents):

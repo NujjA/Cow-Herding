@@ -12,7 +12,7 @@ class MonteCarloAgent(Agent):
         super().__init__(unique_id, model)
         print("creating monte carlo agent")
         nA = len(rl_methods.action_space)
-        self.Q = Q_old
+        self.Q = Q_old # load previous episode Q table
         
         # initialize empty dictionaries of arrays
         #Q = defaultdict(lambda: np.zeros(nA))

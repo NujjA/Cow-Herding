@@ -83,3 +83,6 @@ def move_towards(agent, target_pos):
         new_position = random.choice(empty_locations)
         #print(agent.unique_id, " moving towards")
         agent.model.grid.move_agent(agent, new_position)
+        
+def compute_score(model):
+        return model.score

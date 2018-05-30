@@ -71,3 +71,40 @@ def encode_cell(cell_item):
         return 6
 
     return 0
+
+def running_mean(x):
+    ''' accept a list of numbers x as input. It should return a list mean_values, where mean_values[k] is the mean of x[:k+1].
+    Note: Pay careful attention to indexing! Here, x_k corresponds to x[k-1] 
+    (so x_1 = x[0], x_2  = x[1], etc).'''
+    mu = 0
+    mean_values = []
+    for k in np.arange(0, len(x)):
+        mu = mu + ((1.0/(k+1)) * (x[k] - mu))
+        mean_values.append(mu)
+    return mean_values
+    
+def select_action(Q, epsilon, possible_actions, num_actions, state):
+    ''' choose action based on episilon-greedy method'''
+    
+    #make a list of probabilities based on episilon greedy policy
+    #### fill all actions with default probability
+    probabilities = np.ones(num_actions) * epsilon / len(possible_actions)
+    
+    #### change the non-possible actions to 0
+    for action in range(num_actions):
+        if action not in possible_actions:
+            probabilities[action] = 0        
+    
+    #### change the max action to the correct probability
+    # if a is the max of Q[s][a] 
+    max_action = np.argmax(Q[state])
+    # change that action's probability 
+    probabilities[max_action] = 1 - epsilon + (epsilon / num_actions)
+    
+    # list of possible choices of actions 
+    action_choices = np.arange(num_actions)
+
+    # choose one of the actions based on list of probabilities
+    action = np.random.choice(action_choices, p = probabilities)
+    
+    return action

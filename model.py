@@ -11,6 +11,8 @@ from td_agent import TDAgent
 import cow_methods
 import numpy as np
 import rl_methods
+from mesa.datacollection import DataCollector
+from movement_control import compute_score
 
 class CHModel(Model):
     """A model with some number of agents."""
@@ -41,6 +43,11 @@ class CHModel(Model):
         self.number_plan_agents = 0
         self.number_monte_carlo_agents = 1
         self.number_td_agents = 0
+        
+        # Data collection
+        self.datacollector = DataCollector(
+            model_reporters={"Score": compute_score})  # A function to call
+            #,agent_reporters={"Wealth": "wealth"})  # An agent attribute
         
         # Place wall agents
         for i in range(len(self.wallLocations)):
@@ -91,21 +98,30 @@ class CHModel(Model):
             cell_location = self.grid.find_empty()
             self.grid.place_agent(t, cell_location)
             
+
+            
     def step(self):
         self.state = rl_methods.encode_state(self.grid)
-        if self.schedule.time < self.max_timesteps:
-            self.schedule.step()
-            self.update_score()
-            #print("the current step is ", self.schedule.time)
-            print(np.matrix(self.state))
-            print("the current score is ", self.score)
-        else:
-            print("the final score is ", self.score)
+        self.schedule.step()
+        self.update_score()
+        print(np.matrix(self.state))
+        print("the current score is ", self.score)
+
+#        if self.schedule.time < self.max_timesteps:
+#            self.schedule.step()
+#            self.update_score()
+#            #print("the current step is ", self.schedule.time)
+#            print(np.matrix(self.state))
+#            print("the current score is ", self.score)
+#            self.datacollector.collect(self)
+#        else:
+#            print("the final score is ", self.score)
 
     def update_score(self):
         self.current_cow_count = cow_methods.cows_in_goal(self, self.goalState)
         self.total_cow_count += self.current_cow_count
         print(self.total_cow_count, self.current_cow_count, self.schedule.time)
         self.score = self.total_cow_count / self.schedule.time
-        
+    
+
         

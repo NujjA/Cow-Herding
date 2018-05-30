@@ -8,14 +8,16 @@ from collections import defaultdict
 class MonteCarloAgent(Agent):
     """ Monte Carlo agent """
     
-    def __init__(self, unique_id, model):
+    def __init__(self, unique_id, model, Q_old):
         super().__init__(unique_id, model)
         print("creating monte carlo agent")
         nA = len(rl_methods.action_space)
+        self.Q = Q_old
+        
         # initialize empty dictionaries of arrays
-        Q = defaultdict(lambda: np.zeros(nA))
-        N = defaultdict(lambda: np.zeros(nA))
-        returns_sum = defaultdict(lambda: np.zeros(env.action_space.n))
+        #Q = defaultdict(lambda: np.zeros(nA))
+        #N = defaultdict(lambda: np.zeros(nA))
+        #returns_sum = defaultdict(lambda: np.zeros(env.action_space.n))
 
 
     def step(self):

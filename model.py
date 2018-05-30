@@ -11,14 +11,14 @@ from td_agent import TDAgent
 import cow_methods
 import numpy as np
 import rl_methods
-from mesa.datacollection import DataCollector
+#from mesa.datacollection import DataCollector
 from movement_control import compute_score
 
 class CHModel(Model):
     """A model with some number of agents."""
-    def __init__(self, N, width, height):
+    def __init__(self, width, height, random_n = 0, cow_n = 0, plan_n = 0, mc_n = 0, td_n = 0, episode_number = 0, old_Q_values = None):
         self.running = True 
-        self.num_agents = N
+        #self.num_agents = N
         self.grid = SingleGrid(width, height, True)
         self.schedule = RandomActivation(self)
         
@@ -30,7 +30,6 @@ class CHModel(Model):
         self.total_cow_count = 0.0
         self.current_cow_count = 0.0
         self.score = 0.0
-        #self.cow_agent_list = []
         
         # Save model for agent use
         self.wallLocations = [(1,5), (1,6), (1,7), (2,7), (3,7), (4,7), (5,7), (6,7), (6,6), (6,5)]
@@ -38,15 +37,19 @@ class CHModel(Model):
         self.goalTarget = (3,5) #corral "entrance" that plan agents herd towards
         self.state = None # encode state at each timestep
         
-        self.number_random_agents = 0
-        self.number_cow_agents = 4
-        self.number_plan_agents = 0
-        self.number_monte_carlo_agents = 1
-        self.number_td_agents = 0
+        self.number_random_agents = random_n
+        self.number_cow_agents = cow_n
+        self.number_plan_agents = plan_n
+        self.number_monte_carlo_agents = mc_n
+        self.number_td_agents = td_n
+        
+        # Monte Carlo Agent model save
+        self.Q_values = old_Q_values
+        self.mc_agents = []
         
         # Data collection
-        self.datacollector = DataCollector(
-            model_reporters={"Score": compute_score})  # A function to call
+        #self.datacollector = DataCollector(
+            #model_reporters={"Score": compute_score})  # A function to call
             #,agent_reporters={"Wealth": "wealth"})  # An agent attribute
         
         # Place wall agents
@@ -84,7 +87,8 @@ class CHModel(Model):
             
         # Place monte carlo agents
         for i in range(self.number_monte_carlo_agents):
-            m = MonteCarloAgent(self.id_count, self)
+            m = MonteCarloAgent(self.id_count, self, self.Q_values[i]) # init MC agents with previous Q tables
+            self.mc_agents.append(m) # save MC agents to retrieve Q values
             self.id_count += 1
             self.schedule.add(m)
             cell_location = self.grid.find_empty()
@@ -122,6 +126,12 @@ class CHModel(Model):
         self.total_cow_count += self.current_cow_count
         print(self.total_cow_count, self.current_cow_count, self.schedule.time)
         self.score = self.total_cow_count / self.schedule.time
+        
+    def get_new_Q_values(self):
+        new_Q = []
+        for agent in self.mc_agents:
+            new_Q.append(agent.Q)
+        return new_Q
     
 
         

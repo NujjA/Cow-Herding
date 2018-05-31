@@ -14,6 +14,7 @@ class MonteCarloAgent(Agent):
         nA = len(rl_methods.action_space)
         self.Q = Q_old # load previous episode Q table
         self.episilon = epsilon_ep # episilon calculated by episode
+        self.state = None
         
         # initialize empty dictionaries of arrays
         #Q = defaultdict(lambda: np.zeros(nA))
@@ -23,23 +24,24 @@ class MonteCarloAgent(Agent):
 
     def step(self):
         print("monte carlo step")
-        state = rl_methods.encode_state(self.model.grid)
-        print(state)
+        self.state = rl_methods.encode_state(self.model.grid)
+        
         possible_steps = movement_control.find_empty_location(self.pos, self.model)
-        if state in self.Q:
-            action = self.mc_action_selection()
+        if self.state in self.Q:
+            action = self.mc_action_selection(possible_steps)
         else:
             action = random.choice(possible_steps)
-        self.move()
+        self.move(action)
 
-    def move(self):
-        possible_steps = movement_control.find_empty_location(self.pos, self.model)
-        new_position = random.choice(possible_steps)
+    def move(self,action):
+        new_position = rl_methods.action_next_location(self, self.model.grid, action)
+        #possible_steps = movement_control.find_empty_location(self.pos, self.model)
+        #new_position = random.choice(possible_steps)
         #print(self.unique_id, " moving from ", self.pos, " to ", new_position)
         self.model.grid.move_agent(self, new_position)
 
     def mc_action_selection(self):
-        return 0
+        return select_action(self.Q, self.epsilon, possible_steps, len(rl_methods.action_space), self.state)
         
     def get_variables(self):
         return Q

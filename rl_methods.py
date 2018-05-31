@@ -12,6 +12,36 @@ STAY = 8
 
 action_space = [UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT, STAY]
 
+def action_next_location(agent, grid, action):
+    up_cell = grid.torus_adj((agent.pos[0]+1, agent.pos[1]))
+    down_cell = grid.torus_adj((agent.pos[0]-1, agent.pos[1]))
+    left_cell = grid.torus_adj((agent.pos[0], agent.pos[1]-1))
+    right_cell = grid.torus_adj((agent.pos[0], agent.pos[1]+1))
+    ul_cell = grid.torus_adj((agent.pos[0]+1, agent.pos[1]-1))
+    dl_cell = grid.torus_adj((agent.pos[0]-1, agent.pos[1]-1))
+    ur_cell = grid.torus_adj((agent.pos[0]+1, agent.pos[1]+1))
+    dr_cell = grid.torus_adj((agent.pos[0]-1, agent.pos[1]+1))
+    
+    if action is UP:
+        return up_cell
+    if action is DOWN:
+        return down_cell
+    if action is RIGHT:
+        return right_cell
+    if action is LEFT:
+        return left_cell
+    if action is UP_LEFT:
+        return ul_cell
+    if action is DOWN_LEFT:
+        return dl_cell
+    if action is UP_RIGHT:
+        return ur_cell
+    if action is DOWN_RIGHT:
+        return dr_cell
+        
+    #if not any of the moving actions, then STAY
+    return agent.pos
+
 def possible_action_space(agent, grid):
     possible_actions = [STAY]
     

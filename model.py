@@ -47,10 +47,11 @@ class CHModel(Model):
         self.Q_values = old_Q_values
         self.mc_agents = []
         
-        # Data collection
-        #self.datacollector = DataCollector(
-            #model_reporters={"Score": compute_score})  # A function to call
-            #,agent_reporters={"Wealth": "wealth"})  # An agent attribute
+        #calculate episilon based on episode
+        #epsilon = 1 / i_episode
+        ####### tweak episilon to get better results #######
+        self.epsilon = 1.0/((episode_number/8000)+1)
+
         
         # Place wall agents
         for i in range(len(self.wallLocations)):
@@ -87,7 +88,7 @@ class CHModel(Model):
             
         # Place monte carlo agents
         for i in range(self.number_monte_carlo_agents):
-            m = MonteCarloAgent(self.id_count, self, self.Q_values[i]) # init MC agents with previous Q tables
+            m = MonteCarloAgent(self.id_count, self, self.Q_values[i], self.epsilon) # init MC agents with previous Q tables
             self.mc_agents.append(m) # save MC agents to retrieve Q values
             self.id_count += 1
             self.schedule.add(m)

@@ -3,6 +3,7 @@ import random
 import movement_control, rl_methods
 import numpy as np
 from collections import defaultdict
+import copy
 
 
 class MonteCarloAgent(Agent):
@@ -14,7 +15,9 @@ class MonteCarloAgent(Agent):
         nA = len(rl_methods.action_space)
         self.Q = Q_old # load previous episode Q table
         self.episilon = epsilon_ep # episilon calculated by episode
-        self.state = None
+        self.states = []
+        self.rewards = []
+        self.actions = []
         
         # initialize empty dictionaries of arrays
         #Q = defaultdict(lambda: np.zeros(nA))
@@ -31,6 +34,11 @@ class MonteCarloAgent(Agent):
             action = self.mc_action_selection(possible_steps)
         else:
             action = random.choice(possible_steps)
+            
+        #save state, action
+        self.actions.append(action)
+        self.states.append(copy.deepcopy(self.state))
+        
         self.move(action)
 
     def move(self,action):
@@ -45,3 +53,6 @@ class MonteCarloAgent(Agent):
         
     def get_variables(self):
         return Q
+        
+    def update_rewards(self):
+        self.rewards.append(self.model.current_cow_count)

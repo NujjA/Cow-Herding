@@ -3,7 +3,7 @@ import random
 import numpy as np
 
 def find_empty_location(position, model):
-    """ returns a list of surrounding empty locations steps """
+    """ returns a list of surrounding empty locations (x,y) """
     all_cells = model.grid.get_neighborhood(position, moore=True, include_center=True)
     empty_cells = []
     for cell in all_cells:

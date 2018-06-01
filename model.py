@@ -13,6 +13,9 @@ import numpy as np
 import rl_methods
 #from mesa.datacollection import DataCollector
 from movement_control import compute_score
+import copy
+from collections import defaultdict
+
 
 class CHModel(Model):
     """A model with some number of agents."""
@@ -44,7 +47,12 @@ class CHModel(Model):
         self.number_td_agents = td_n
         
         # Monte Carlo Agent model save
-        self.Q_values = old_Q_values
+        if old_Q_values:
+            self.Q_values = old_Q_values
+        else:
+            self.Q_values = []
+            for agent in range(self.number_monte_carlo_agents):
+                self.Q_values.append(defaultdict(lambda: np.zeros(len(rl_methods.action_space))))
         self.mc_agents = []
         
         #calculate episilon based on episode
@@ -109,18 +117,23 @@ class CHModel(Model):
         self.state = rl_methods.encode_state(self.grid)
         self.schedule.step()
         self.update_score()
-        print(np.matrix(self.state))
-        print("the current score is ", self.score)
+        
+        #print(np.matrix(self.state))
+        #print("the current score is ", self.score)
+        
+        # Update rewards of Monte Carlo agents
+        for mcagent in self.mc_agents:
+            mcagent.update_rewards()
 
-#        if self.schedule.time < self.max_timesteps:
-#            self.schedule.step()
-#            self.update_score()
-#            #print("the current step is ", self.schedule.time)
-#            print(np.matrix(self.state))
-#            print("the current score is ", self.score)
-#            self.datacollector.collect(self)
-#        else:
-#            print("the final score is ", self.score)
+##        if self.schedule.time < self.max_timesteps:
+##            self.schedule.step()
+##            self.update_score()
+##            #print("the current step is ", self.schedule.time)
+##            print(np.matrix(self.state))
+##            print("the current score is ", self.score)
+##            self.datacollector.collect(self)
+##        else:
+##            print("the final score is ", self.score)
 
     def update_score(self):
         self.current_cow_count = cow_methods.cows_in_goal(self, self.goalState)
@@ -129,9 +142,11 @@ class CHModel(Model):
         self.score = self.total_cow_count / self.schedule.time
         
     def get_new_Q_values(self):
+        """ Update model Q values at the end of the episode, called by run after each episode """
         new_Q = []
         for agent in self.mc_agents:
-            new_Q.append(agent.Q)
+            updated_Q = agent.Q_table_update()
+            new_Q.append(copy.deepcopy(updated_Q))
         return new_Q
     
 

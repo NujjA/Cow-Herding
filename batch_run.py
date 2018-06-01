@@ -1,10 +1,8 @@
 from model import CHModel
-import movement_control
-from collections import defaultdict
 import movement_control, rl_methods
 
-episodes = 3
-steps = 100
+episodes = 300
+steps = 500
 
 random_agents = 1
 cow_agents = 4
@@ -13,9 +11,7 @@ monte_carlo_agents = 1
 td_agents = 0
 nA = len(rl_methods.action_space)
 
-MC_Q_values = [] # Save Q values so MC agents can access each episode
-for agent in range(monte_carlo_agents):
-    MC_Q_values.append(defaultdict(lambda: np.zeros(nA)))
+MC_Q_values = None # Save Q values so MC agents can access each episode
 
 final_scores = []
 for episode in range(episodes):
@@ -26,6 +22,15 @@ for episode in range(episodes):
     final_scores.append(movement_control.compute_score(model))
     MC_Q_values = model.get_new_Q_values()
 
+
+#print the final Q tables
+for i, Q in enumerate(MC_Q_values):
+        print("Q table ", i)
+        for s in Q:
+            print("next state")
+            print(Q[s])    
+
+#print the final scores
 for ep, score in enumerate(final_scores):
     print("Final score for episode ", ep, ": ", score)
 

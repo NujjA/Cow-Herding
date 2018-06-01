@@ -42,7 +42,8 @@ def action_next_location(agent, grid, action):
     #if not any of the moving actions, then STAY
     return agent.pos
 
-def possible_action_space(agent, grid):
+def possible_action_space(agent):
+    grid = agent.model.grid
     possible_actions = [STAY]
     
     up_cell = grid.torus_adj((agent.pos[0]+1, agent.pos[1]))
@@ -86,6 +87,17 @@ def encode_state(grid):
     
     state_tuple = [tuple(l) for l in list_state]
     return tuple(state_tuple)
+    
+def state_to_lists(grid):
+    list_state = np.zeros((grid.width, grid.height))
+    for cell in grid.coord_iter():
+        cell_content, x, y = cell
+        if cell_content:
+            #print(cell_content, x, y)
+            #state[x][y] = encode_cell(cell_content)
+            list_state[y][x] = encode_cell(cell_content) 
+    
+    return list_state
 
 def encode_cell(cell_item):
     if cell_item.__class__.__name__ is "WallAgent":
@@ -114,7 +126,7 @@ def running_mean(x):
         mean_values.append(mu)
     return mean_values
     
-def select_action(Q, epsilon, possible_actions, num_actions, state):
+def select_action_old(Q, epsilon, possible_actions, num_actions, state):
     ''' choose action based on episilon-greedy method'''
     
     #make a list of probabilities based on episilon greedy policy
@@ -131,11 +143,57 @@ def select_action(Q, epsilon, possible_actions, num_actions, state):
     max_action = np.argmax(Q[state])
     # change that action's probability 
     probabilities[max_action] = 1 - epsilon + (epsilon / num_actions)
+
+    print("possible actions: ", possible_actions)
+    print("probabilities: ", probabilities)
     
     # list of possible choices of actions 
     action_choices = np.arange(num_actions)
+    
+    print("action choices: ", action_choices)
+    print("possible actions: ", possible_actions)
+    print("probabilities: ", probabilities)
 
     # choose one of the actions based on list of probabilities
     action = np.random.choice(action_choices, p = probabilities)
+    
+    return action
+    
+    
+def select_e_greedy_action(Q, epsilon, possible_actions, state):
+    ''' choose action based on episilon-greedy method'''
+    
+    nA = len(possible_actions)
+    
+    #make a list of probabilities based on episilon greedy policy
+    #### fill all actions with default probability
+    probabilities = np.ones(nA) * epsilon / nA
+       
+    #### change the max action to the correct probability
+    # if a is the max of Q[s][a] TODO: fix this
+    max_action = np.argmax(Q[state])
+    
+    print("max_action: ", max_action)
+    
+    # change that action's probability     
+    if max_action in possible_actions:
+        # find the index of max_action in possible actions
+        index_max = possible_actions.index(max_action)
+        print("index max: ", index_max)
+        # change the probability of that action
+        probabilities[index_max] = 1 - epsilon + (epsilon / nA)
+        
+        # choose one of the actions based on list of probabilities
+        action = np.random.choice(possible_actions, p = probabilities)
+    else:
+        action = np.random.choice(possible_actions)
+        print("max action is not in possible actions, pick a random action from list")
+
+    print("possible actions: ", possible_actions)
+    print("probabilities: ", probabilities)
+    print("prob sum: ", probabilities.sum())
+    print("action: ", action)
+
+    
     
     return action

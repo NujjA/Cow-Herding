@@ -58,10 +58,14 @@ class MonteCarloAgent(Agent):
         print("I've seen this before")
         return rl_methods.select_e_greedy_action(self.Q, self.epsilon, possible_steps, self.state)
         
-    def Q_table_update(self):
+    def Q_table_update(self, shared_Q_table = None):
         """Called by the model at the end of the episode to update the Q table"""
         #N = defaultdict(lambda: np.zeros(nA)) # how many times visit state action pair
         #returns_sum = defaultdict(lambda: np.zeros(env.action_space.n))
+        
+        if(shared_Q_table):
+            self.Q = shared_Q_table
+        
         for i in range(len(self.states)): #for each timestep
             #state = rl_methods.state_to_tuple(self.states[i])
             state = self.states[i]
@@ -81,6 +85,7 @@ class MonteCarloAgent(Agent):
             #print("prev Q", self.Q[state][action])
             #print("alpha ", self.alpha)
             #print("reward ", reward)
+                
             
             prev_Q = self.Q[state][action]
             self.Q[state][action] = prev_Q + (self.alpha * (reward - prev_Q))

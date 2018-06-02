@@ -158,9 +158,16 @@ class CHModel(Model):
     def get_new_Q_values(self):
         """ Update model Q values at the end of the episode, called by run after each episode """
         new_Q = []
-        for agent in self.mc_agents:
-            updated_Q = agent.Q_table_update()
+        
+        if(self.Q_table_sharing):
+            updated_Q = None
+            for agent in self.mc_agents:
+                updated_Q = agent.Q_table_update(shared_Q_table = updated_Q)
             new_Q.append(copy.deepcopy(updated_Q))
+        else:
+            for agent in self.mc_agents:
+                updated_Q = agent.Q_table_update()
+                new_Q.append(copy.deepcopy(updated_Q))
         return new_Q
     
 

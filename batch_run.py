@@ -1,8 +1,8 @@
 from model import CHModel
 import movement_control, rl_methods
 
-episodes = 300
-steps = 500
+episodes = 100
+steps = 100
 
 random_agents = 1
 cow_agents = 4

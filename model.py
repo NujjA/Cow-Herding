@@ -46,15 +46,24 @@ class CHModel(Model):
         self.number_monte_carlo_agents = mc_n
         self.number_td_agents = td_n
         
+        
+        
         # Monte Carlo Agent model save
+        self.Q_table_sharing = True ## If true, agents share a Q table
         if old_Q_values:
             self.Q_values = old_Q_values
         else:
             self.Q_values = []
-            for agent in range(self.number_monte_carlo_agents):
+            if (self.Q_table_sharing):
+                # Just one Q table  
                 self.Q_values.append(defaultdict(lambda: np.zeros(len(rl_methods.action_space))))
+            else:
+                #every agent gets it's own Q table
+                for agent in range(self.number_monte_carlo_agents):
+                    self.Q_values.append(defaultdict(lambda: np.zeros(len(rl_methods.action_space))))
         self.mc_agents = []
         
+        self.episode = episode_number
         #calculate episilon based on episode
         #epsilon = 1 / i_episode
         ####### tweak episilon to get better results #######
@@ -96,7 +105,12 @@ class CHModel(Model):
             
         # Place monte carlo agents
         for i in range(self.number_monte_carlo_agents):
-            m = MonteCarloAgent(self.id_count, self, self.Q_values[i], self.epsilon) # init MC agents with previous Q tables
+            Q_table_to_use = None
+            if (self.Q_table_sharing):
+                Q_table_to_use = self.Q_values[0]
+            else:
+                Q_table_to_use = self.Q_values[i]
+            m = MonteCarloAgent(self.id_count, self, Q_table_to_use, self.epsilon) # init MC agents with previous Q tables
             self.mc_agents.append(m) # save MC agents to retrieve Q values
             self.id_count += 1
             self.schedule.add(m)
@@ -138,7 +152,7 @@ class CHModel(Model):
     def update_score(self):
         self.current_cow_count = cow_methods.cows_in_goal(self, self.goalState)
         self.total_cow_count += self.current_cow_count
-        print(self.total_cow_count, self.current_cow_count, self.schedule.time)
+        print(self.total_cow_count, self.current_cow_count, self.schedule.time, " Episode: ", self.episode)
         self.score = self.total_cow_count / self.schedule.time
         
     def get_new_Q_values(self):

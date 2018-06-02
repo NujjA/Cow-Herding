@@ -75,7 +75,7 @@ def possible_action_space(agent):
     return possible_actions
 
 
-def encode_state(grid):
+def encode_state(grid): #TODO: Encode current agent location
     
     list_state = np.zeros((grid.width, grid.height))
     for cell in grid.coord_iter():
@@ -88,7 +88,7 @@ def encode_state(grid):
     state_tuple = [tuple(l) for l in list_state]
     return tuple(state_tuple)
     
-def state_to_lists(grid):
+def grid_to_lists(grid): #TODO: changed name, is anything calling it? do i need agent location data?
     list_state = np.zeros((grid.width, grid.height))
     for cell in grid.coord_iter():
         cell_content, x, y = cell
@@ -191,7 +191,7 @@ def select_e_greedy_action(Q, epsilon, possible_actions, state):
 
     print("possible actions: ", possible_actions)
     print("probabilities: ", probabilities)
-    print("prob sum: ", probabilities.sum())
+    #print("prob sum: ", probabilities.sum())
     print("action: ", action)
 
     

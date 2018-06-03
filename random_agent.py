@@ -17,3 +17,5 @@ class RandomAgent(Agent):
         new_position = random.choice(possible_steps)
         #print(self.unique_id, " moving from ", self.pos, " to ", new_position)
         self.model.grid.move_agent(self, new_position)
+        #TODO: remove code after this, for testing
+        #print(self.model.grid.get_neighborhood(self.pos, moore = True, include_center = True, radius = 2))

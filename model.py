@@ -46,19 +46,31 @@ class CHModel(Model):
         self.number_monte_carlo_agents = mc_n
         self.number_td_agents = td_n
         
+        
+        
         # Monte Carlo Agent model save
-        if old_Q_values:
+        self.Q_table_sharing = True ## If true, agents share a Q table
+        self.vision_range = 2 # How far the MC agents can see
+        
+        if old_Q_values: #load previous Q tables if they exist
             self.Q_values = old_Q_values
         else:
-            self.Q_values = []
-            for agent in range(self.number_monte_carlo_agents):
+            self.Q_values = [] #no previous Q tables, so make new ones
+            if (self.Q_table_sharing):
+                # Just one Q table  
                 self.Q_values.append(defaultdict(lambda: np.zeros(len(rl_methods.action_space))))
+            else:
+                #every agent gets it's own Q table
+                for agent in range(self.number_monte_carlo_agents):
+                    self.Q_values.append(defaultdict(lambda: np.zeros(len(rl_methods.action_space))))
         self.mc_agents = []
         
+        self.episode = episode_number
         #calculate episilon based on episode
         #epsilon = 1 / i_episode
         ####### tweak episilon to get better results #######
-        self.epsilon = 1.0/((episode_number/8000)+1)
+        self.epsilon = 1.0/((episode_number/800) + 1)
+        #self.epsilon = 1.0/((episode_number/8000)+1)
 
         
         # Place wall agents
@@ -96,7 +108,12 @@ class CHModel(Model):
             
         # Place monte carlo agents
         for i in range(self.number_monte_carlo_agents):
-            m = MonteCarloAgent(self.id_count, self, self.Q_values[i], self.epsilon) # init MC agents with previous Q tables
+            Q_table_to_use = None
+            if (self.Q_table_sharing): # If sharing Q tables, everyone gets a copy of the same Q table 
+                Q_table_to_use = copy.deepcopy(self.Q_values[0])
+            else:
+                Q_table_to_use = self.Q_values[i] # If not sharing, everyone gets a different Q table
+            m = MonteCarloAgent(self.id_count, self, Q_table_to_use, self.epsilon, vision = self.vision_range) # init MC agents with previous Q tables
             self.mc_agents.append(m) # save MC agents to retrieve Q values
             self.id_count += 1
             self.schedule.add(m)
@@ -138,15 +155,24 @@ class CHModel(Model):
     def update_score(self):
         self.current_cow_count = cow_methods.cows_in_goal(self, self.goalState)
         self.total_cow_count += self.current_cow_count
-        print(self.total_cow_count, self.current_cow_count, self.schedule.time)
+        print(self.total_cow_count, self.current_cow_count, self.schedule.time, " Episode: ", self.episode)
         self.score = self.total_cow_count / self.schedule.time
         
     def get_new_Q_values(self):
         """ Update model Q values at the end of the episode, called by run after each episode """
         new_Q = []
-        for agent in self.mc_agents:
-            updated_Q = agent.Q_table_update()
+        
+        if(self.Q_table_sharing): #If all agents are sharing Q table data
+            updated_Q = None
+            for agent in self.mc_agents:
+                # Update the Q table then pass it on to the next agent on the team to update
+                updated_Q = agent.Q_table_update(shared_Q_table = updated_Q) 
             new_Q.append(copy.deepcopy(updated_Q))
+        else:
+            # If all agents have their own Q tables, update and save for next episode
+            for agent in self.mc_agents:
+                updated_Q = agent.Q_table_update()
+                new_Q.append(copy.deepcopy(updated_Q))
         return new_Q
     
 

@@ -1,4 +1,5 @@
 import numpy as np
+import movement_control
 
 UP = 0
 DOWN = 1
@@ -110,8 +111,10 @@ def encode_state_range(agent, vision_range) :
             list_y += 1
             list_x = 0
     
+    #distance = int(round(movement_control.get_distance(grid, agent.pos, agent.model.goalTarget)))
     state_tuple = [tuple(l) for l in list_state]
-    return tuple([tuple(state_tuple), agent.pos])            
+    #return tuple([tuple(state_tuple), distance])
+    return tuple(state_tuple)            
                 
 def grid_to_lists(grid): #TODO: changed name, is anything calling it? do i need agent location data?
     list_state = np.zeros((grid.width, grid.height))

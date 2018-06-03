@@ -11,7 +11,7 @@ class MonteCarloAgent(Agent):
     
     def __init__(self, unique_id, model, Q_old, epsilon_ep, gamma = 1, alpha = 0.008, vision = None):
         super().__init__(unique_id, model)
-        print("creating monte carlo agent")
+        print("creating monte carlo agent with vision range ", vision)
         nA = len(rl_methods.action_space)
         self.Q = Q_old # load previous episode Q table
         self.epsilon = epsilon_ep # episilon calculated by episode
@@ -91,11 +91,12 @@ class MonteCarloAgent(Agent):
             #print("prev Q", self.Q[state][action])
             #print("alpha ", self.alpha)
             #print("reward ", reward)
+            
                 
             
             prev_Q = self.Q[state][action]
             self.Q[state][action] = prev_Q + (self.alpha * (reward - prev_Q))
-            
+            #print("next Q", prev_Q + (self.alpha * (reward - prev_Q)))
 
         return self.Q
         

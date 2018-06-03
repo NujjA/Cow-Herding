@@ -50,7 +50,7 @@ class CHModel(Model):
         
         # Monte Carlo Agent model save
         self.Q_table_sharing = True ## If true, agents share a Q table
-        self.vision_range = 4 # How far the MC agents can see
+        self.vision_range = 2 # How far the MC agents can see
         
         if old_Q_values: #load previous Q tables if they exist
             self.Q_values = old_Q_values
@@ -69,7 +69,8 @@ class CHModel(Model):
         #calculate episilon based on episode
         #epsilon = 1 / i_episode
         ####### tweak episilon to get better results #######
-        self.epsilon = 1.0/((episode_number/8000)+1)
+        self.epsilon = 1.0/((episode_number/800) + 1)
+        #self.epsilon = 1.0/((episode_number/8000)+1)
 
         
         # Place wall agents
@@ -165,7 +166,7 @@ class CHModel(Model):
             updated_Q = None
             for agent in self.mc_agents:
                 # Update the Q table then pass it on to the next agent on the team to update
-                updated_Q = agent.Q_table_update(shared_Q_table = copy.deepcopy(updated_Q)) 
+                updated_Q = agent.Q_table_update(shared_Q_table = updated_Q) 
             new_Q.append(copy.deepcopy(updated_Q))
         else:
             # If all agents have their own Q tables, update and save for next episode

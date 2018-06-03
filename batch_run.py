@@ -1,7 +1,8 @@
 from model import CHModel
 import movement_control, rl_methods
+import numpy as np
 
-episodes = 100
+episodes = 2000
 steps = 100
 
 random_agents = 1
@@ -31,6 +32,12 @@ for i, Q in enumerate(MC_Q_values):
 #            print(Q[s])    
 
 #print the final scores
-#for ep, score in enumerate(final_scores):
-#    print("Final score for episode ", ep, ": ", score)
+for ep, score in enumerate(final_scores):
+    print("Final score for episode ", ep, ": ", score)
 
+
+print("Average scores by 10")
+avg_scores = []
+for i in range(0, len(final_scores)-10, 10):
+    avg_scores.append(np.mean(final_scores[i: i+10]))
+print(avg_scores)

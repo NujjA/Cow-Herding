@@ -88,6 +88,31 @@ def encode_state(grid): #TODO: Encode current agent location
     state_tuple = [tuple(l) for l in list_state]
     return tuple(state_tuple)
     
+def encode_state_range(agent, vision_range) :
+    grid = agent.model.grid
+    radius = vision_range
+    #cell_locations = grid.get_neighborhood(agent.pos, moore = True, include_center = True, radius = vision_range)
+    state_w_h = vision_range + vision_range + 1
+    list_state = np.zeros((state_w_h, state_w_h))
+    list_x = 0 #stored in list as
+    list_y = 0 #stored in list as
+    pos_x = agent.pos[0] # actual location of agent to start
+    pos_y = agent.pos[1] # actual location of agent to start
+    for dy in range(-radius, radius + 1):
+            for dx in range(-radius, radius + 1):
+                
+                grid_position = grid.torus_adj((pos_x + dx, pos_y + dy))
+                if not grid.is_cell_empty(grid_position):
+                    # get cell content of grid position
+                    cell_content = grid[grid_position[0]][grid_position[1]]
+                    list_state[list_x][list_y] = encode_cell(cell_content)
+                list_x += 1
+            list_y += 1
+            list_x = 0
+    
+    state_tuple = [tuple(l) for l in list_state]
+    return tuple([tuple(state_tuple), agent.pos])            
+                
 def grid_to_lists(grid): #TODO: changed name, is anything calling it? do i need agent location data?
     list_state = np.zeros((grid.width, grid.height))
     for cell in grid.coord_iter():

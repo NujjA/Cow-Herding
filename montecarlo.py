@@ -9,7 +9,7 @@ import copy
 class MonteCarloAgent(Agent):
     """ Monte Carlo agent """
     
-    def __init__(self, unique_id, model, Q_old, epsilon_ep, gamma = 1, alpha = 0.008):
+    def __init__(self, unique_id, model, Q_old, epsilon_ep, gamma = 1, alpha = 0.008, vision = None):
         super().__init__(unique_id, model)
         print("creating monte carlo agent")
         nA = len(rl_methods.action_space)
@@ -21,6 +21,8 @@ class MonteCarloAgent(Agent):
         self.rewards = []
         self.actions = []
         
+        self.vision_range = vision
+        
         # initialize empty dictionaries of arrays
         #Q = defaultdict(lambda: np.zeros(nA))
         #N = defaultdict(lambda: np.zeros(nA))
@@ -29,7 +31,11 @@ class MonteCarloAgent(Agent):
 
     def step(self):
         print("monte carlo step")
-        self.state = rl_methods.encode_state(self.model.grid)
+        if self.vision_range:
+            self.state = rl_methods.encode_state_range(self, self.vision_range) # TODO: get this working, then fix other things for vision range if needed
+            #print(self.state)
+        else:
+            self.state = rl_methods.encode_state(self.model.grid)
         
         #possible_steps = movement_control.find_empty_location(self.pos, self.model)
         
@@ -63,7 +69,7 @@ class MonteCarloAgent(Agent):
         #N = defaultdict(lambda: np.zeros(nA)) # how many times visit state action pair
         #returns_sum = defaultdict(lambda: np.zeros(env.action_space.n))
         
-        if(shared_Q_table):
+        if(shared_Q_table): # If sharing Q table, get the last updated Q table from the team
             self.Q = shared_Q_table
         
         for i in range(len(self.states)): #for each timestep

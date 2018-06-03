@@ -50,10 +50,12 @@ class CHModel(Model):
         
         # Monte Carlo Agent model save
         self.Q_table_sharing = True ## If true, agents share a Q table
-        if old_Q_values:
+        self.vision_range = 4 # How far the MC agents can see
+        
+        if old_Q_values: #load previous Q tables if they exist
             self.Q_values = old_Q_values
         else:
-            self.Q_values = []
+            self.Q_values = [] #no previous Q tables, so make new ones
             if (self.Q_table_sharing):
                 # Just one Q table  
                 self.Q_values.append(defaultdict(lambda: np.zeros(len(rl_methods.action_space))))
@@ -106,11 +108,11 @@ class CHModel(Model):
         # Place monte carlo agents
         for i in range(self.number_monte_carlo_agents):
             Q_table_to_use = None
-            if (self.Q_table_sharing):
-                Q_table_to_use = self.Q_values[0]
+            if (self.Q_table_sharing): # If sharing Q tables, everyone gets a copy of the same Q table 
+                Q_table_to_use = copy.deepcopy(self.Q_values[0])
             else:
-                Q_table_to_use = self.Q_values[i]
-            m = MonteCarloAgent(self.id_count, self, Q_table_to_use, self.epsilon) # init MC agents with previous Q tables
+                Q_table_to_use = self.Q_values[i] # If not sharing, everyone gets a different Q table
+            m = MonteCarloAgent(self.id_count, self, Q_table_to_use, self.epsilon, vision = self.vision_range) # init MC agents with previous Q tables
             self.mc_agents.append(m) # save MC agents to retrieve Q values
             self.id_count += 1
             self.schedule.add(m)
@@ -159,12 +161,14 @@ class CHModel(Model):
         """ Update model Q values at the end of the episode, called by run after each episode """
         new_Q = []
         
-        if(self.Q_table_sharing):
+        if(self.Q_table_sharing): #If all agents are sharing Q table data
             updated_Q = None
             for agent in self.mc_agents:
-                updated_Q = agent.Q_table_update(shared_Q_table = updated_Q)
+                # Update the Q table then pass it on to the next agent on the team to update
+                updated_Q = agent.Q_table_update(shared_Q_table = copy.deepcopy(updated_Q)) 
             new_Q.append(copy.deepcopy(updated_Q))
         else:
+            # If all agents have their own Q tables, update and save for next episode
             for agent in self.mc_agents:
                 updated_Q = agent.Q_table_update()
                 new_Q.append(copy.deepcopy(updated_Q))

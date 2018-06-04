@@ -3,7 +3,7 @@ import movement_control, rl_methods
 import numpy as np
 import dill
 
-episodes = 1
+episodes = 100
 steps = 50
 
 random_agents = 0
@@ -46,7 +46,8 @@ print(avg_scores)
 # Save shared or first Q table for trained MC agent use
 if (monte_carlo_agents > 0) :
     print("Saving Q table")
-    Q_to_save = np.asarray(MC_Q_values[0])
+    #Q_to_save = np.asarray(MC_Q_values[0])
+    Q_to_save = MC_Q_values[0]
     with open('mc_q_save.pkl', 'wb') as file:
         dill.dump(Q_to_save, file)
     print("Dumped")

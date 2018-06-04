@@ -4,20 +4,14 @@ import numpy as np
 import random
 
 class TrainedMonteCarloAgent(Agent):
-    """ Pretrained Monte Carlo agent """
+    """ Pretrained Monte Carlo agent
+        Must be run with same number of agents as were used for training Q table"""
     
     def __init__(self, unique_id, model, Q_old, vision = None):
         super().__init__(unique_id, model)
         print("creating trained mc agent with vision range ", vision)
         nA = len(rl_methods.action_space)
         self.Q = Q_old # load previous episode Q table
-        #self.epsilon = epsilon_ep # episilon calculated by episode
-        #self.gamma = gamma
-        #self.alpha = alpha
-        #self.states = []
-        #self.rewards = []
-        #self.actions = []
-        
         
         self.vision_range = vision
 
@@ -26,19 +20,13 @@ class TrainedMonteCarloAgent(Agent):
         print("trained monte carlo step")
         if self.vision_range:
             self.state = rl_methods.encode_state_range(self, self.vision_range) 
-            #print(self.state)
         else:
             self.state = rl_methods.encode_state(self.model.grid)
                 
         possible_actions = rl_methods.possible_action_space(self)
-        #print("Q: ", self.Q)
-        Q_array = np.array(self.Q)
-        print("Type Q: ", self.Q.dtype)
-        #print("state: ", self.state)
-        #print("Type state", type(self.state))
+
         if self.state in self.Q:
-            #action = self.mc_action_selection(possible_actions)
-            action = max_action = np.argmax(Q[state])
+            action = max_action = np.argmax(self.Q[self.state])
             print("The max action is ", action)
             if action not in possible_actions:
                 action = random.choice(possible_actions)

@@ -5,10 +5,10 @@ import numpy as np
 episodes = 2000
 steps = 100
 
-random_agents = 1
+random_agents = 0
 cow_agents = 4
 plan_agents = 0
-monte_carlo_agents = 2
+monte_carlo_agents = 3
 td_agents = 0
 nA = len(rl_methods.action_space)
 

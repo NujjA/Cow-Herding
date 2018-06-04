@@ -138,6 +138,8 @@ def encode_cell(cell_item):
         return 4
     if cell_item.__class__.__name__ is "MonteCarloAgent":
         return 5
+    if cell_item.__class__.__name__ is "TrainedMonteCarloAgent":
+        return 5
     if cell_item.__class__.__name__ is "TDAgent":
         return 6
 

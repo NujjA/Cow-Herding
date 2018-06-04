@@ -32,7 +32,7 @@ class MonteCarloAgent(Agent):
     def step(self):
         print("monte carlo step")
         if self.vision_range:
-            self.state = rl_methods.encode_state_range(self, self.vision_range) # TODO: get this working, then fix other things for vision range if needed
+            self.state = rl_methods.encode_state_range(self, self.vision_range) 
             #print(self.state)
         else:
             self.state = rl_methods.encode_state(self.model.grid)

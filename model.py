@@ -7,6 +7,7 @@ from random_agent import RandomAgent
 from plan_agent import PlanAgent
 from cow_agent import CowAgent
 from montecarlo import MonteCarloAgent
+from trained_mc_agent import TrainedMonteCarloAgent
 from td_agent import TDAgent
 import cow_methods
 import numpy as np
@@ -15,11 +16,12 @@ import rl_methods
 from movement_control import compute_score
 import copy
 from collections import defaultdict
+import dill
 
 
 class CHModel(Model):
     """A model with some number of agents."""
-    def __init__(self, width, height, random_n = 0, cow_n = 0, plan_n = 0, mc_n = 0, td_n = 0, episode_number = 0, old_Q_values = None):
+    def __init__(self, width, height, random_n = 0, cow_n = 0, plan_n = 0, mc_n = 0, td_n = 0, episode_number = 0, t_mc_n = 0, old_Q_values = None):
         self.running = True 
         #self.num_agents = N
         self.grid = SingleGrid(width, height, True)
@@ -45,7 +47,7 @@ class CHModel(Model):
         self.number_plan_agents = plan_n
         self.number_monte_carlo_agents = mc_n
         self.number_td_agents = td_n
-        
+        self.number_trained_mc_agents = t_mc_n
         
         
         # Monte Carlo Agent model save
@@ -119,6 +121,22 @@ class CHModel(Model):
             self.schedule.add(m)
             cell_location = self.grid.find_empty()
             self.grid.place_agent(m, cell_location)
+        
+        # Place trained monte carlo agents
+        # TODO: open/load trained Q table
+        if (self.number_trained_mc_agents > 0):
+            loaded_Q = None
+            with open('mc_q_save.pkl', 'rb') as file:
+                loaded_Q = dill.load(file)
+            if loaded_Q:
+                for i in range(self.number_trained_mc_agents):
+                    tm = TrainedMonteCarloAgent(self.id_count, self, loaded_Q, vision = self.vision_range)
+                    self.id_count += 1
+                    self.schedule.add(tm)
+                    cell_location = self.grid.find_empty()
+                    self.grid.place_agent(tm, cell_location)
+            else:
+                print("Can't load Q table for trained MC Agents")
             
         # Place TD agents
         for i in range(self.number_td_agents):

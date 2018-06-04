@@ -7,6 +7,7 @@ from cow_agent import CowAgent
 from plan_agent import PlanAgent
 from montecarlo import MonteCarloAgent
 from td_agent import TDAgent
+from trained_mc_agent import TrainedMonteCarloAgent
 import random
 import movement_control
 
@@ -51,6 +52,12 @@ def agent_portrayal(agent):
         portrayal["Shape"] = "circle"
         portrayal["Layer"] = 0
         portrayal["Color"] = "orange"
+        portrayal["r"] = .5
+        
+    elif type(agent) is TrainedMonteCarloAgent:
+        portrayal["Shape"] = "circle"
+        portrayal["Layer"] = 0
+        portrayal["Color"] = "yellow"
         portrayal["r"] = .5
 
     return portrayal

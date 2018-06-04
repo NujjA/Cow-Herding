@@ -50,7 +50,7 @@ class CHModel(Model):
         
         # Monte Carlo Agent model save
         self.Q_table_sharing = True ## If true, agents share a Q table
-        self.vision_range = 2 # How far the MC agents can see
+        self.vision_range = 3 # How far the MC agents can see
         
         if old_Q_values: #load previous Q tables if they exist
             self.Q_values = old_Q_values
@@ -110,7 +110,7 @@ class CHModel(Model):
         for i in range(self.number_monte_carlo_agents):
             Q_table_to_use = None
             if (self.Q_table_sharing): # If sharing Q tables, everyone gets a copy of the same Q table 
-                Q_table_to_use = copy.deepcopy(self.Q_values[0])
+                Q_table_to_use = self.Q_values[0]
             else:
                 Q_table_to_use = self.Q_values[i] # If not sharing, everyone gets a different Q table
             m = MonteCarloAgent(self.id_count, self, Q_table_to_use, self.epsilon, vision = self.vision_range) # init MC agents with previous Q tables
@@ -139,9 +139,12 @@ class CHModel(Model):
         #print("the current score is ", self.score)
         
         # Update rewards of Monte Carlo agents
+        rewards_type = True # if rewards_type is true, use the actual current score, otherwise use number of cows in goal
         for mcagent in self.mc_agents:
-            mcagent.update_rewards()
-
+            if rewards_type:
+                mcagent.update_rewards(self.score)
+            else:
+                mcagent.update_rewards(self.current_cow_count)
 ##        if self.schedule.time < self.max_timesteps:
 ##            self.schedule.step()
 ##            self.update_score()

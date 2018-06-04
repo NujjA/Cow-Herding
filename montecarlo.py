@@ -100,6 +100,6 @@ class MonteCarloAgent(Agent):
 
         return self.Q
         
-    def update_rewards(self):
+    def update_rewards(self, reward):
         """Called by the model at the end of the step to get the reward for the current state and action"""
-        self.rewards.append(float(self.model.current_cow_count))
+        self.rewards.append(float(reward))

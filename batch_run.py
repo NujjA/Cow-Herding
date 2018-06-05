@@ -3,14 +3,14 @@ import movement_control, rl_methods
 import numpy as np
 import dill
 
-episodes = 100
-steps = 50
+episodes = 3000
+steps = 100
 
 random_agents = 0
 cow_agents = 4
 plan_agents = 0
-monte_carlo_agents = 0
-trained_mc_agents = 1
+monte_carlo_agents = 2
+trained_mc_agents = 0
 td_agents = 0
 nA = len(rl_methods.action_space)
 

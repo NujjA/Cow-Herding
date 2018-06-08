@@ -13,7 +13,32 @@ STAY = 8
 
 action_space = [UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT, STAY]
 
+def action_word(action):
+    print("action word ", action)
+    if action == UP:
+        return "UP"
+    if action == DOWN:
+        return "DOWN"
+    if action == LEFT:
+        return "LEFT"
+    if action == RIGHT:
+        return "RIGHT"
+    if action == UP_LEFT:
+        return "UP_LEFT"
+    if action == UP_RIGHT:
+        return "UP_RIGHT"
+    if action == DOWN_LEFT:
+        return "DOWN_LEFT"
+    if action == DOWN_RIGHT:
+        return "DOWN_RIGHT"
+    if action == STAY:
+        return "STAY"
+        
+    return "INVALID ACTION"
+    
+    
 def action_next_location(agent, grid, action):
+    print("in action next location")
     up_cell = grid.torus_adj((agent.pos[0]+1, agent.pos[1]))
     down_cell = grid.torus_adj((agent.pos[0]-1, agent.pos[1]))
     left_cell = grid.torus_adj((agent.pos[0], agent.pos[1]-1))
@@ -23,29 +48,33 @@ def action_next_location(agent, grid, action):
     ur_cell = grid.torus_adj((agent.pos[0]+1, agent.pos[1]+1))
     dr_cell = grid.torus_adj((agent.pos[0]-1, agent.pos[1]+1))
     
-    if action is UP:
+    if action == UP:
         return up_cell
-    if action is DOWN:
+    if action == DOWN:
         return down_cell
-    if action is RIGHT:
+    if action == RIGHT:
         return right_cell
-    if action is LEFT:
+    if action == LEFT:
         return left_cell
-    if action is UP_LEFT:
+    if action == UP_LEFT:
         return ul_cell
-    if action is DOWN_LEFT:
+    if action == DOWN_LEFT:
         return dl_cell
-    if action is UP_RIGHT:
+    if action == UP_RIGHT:
         return ur_cell
-    if action is DOWN_RIGHT:
+    if action == DOWN_RIGHT:
         return dr_cell
+    if action == STAY:
+        return agent.pos
         
+    print("action next location error: not an available action")
     #if not any of the moving actions, then STAY
     return agent.pos
 
 def possible_action_space(agent):
     grid = agent.model.grid
-    possible_actions = [STAY]
+    #possible_actions = [STAY] # Uncomment if STAY is a viable option
+    possible_actions = [] # Uncomment if STAY is not a viable option
     
     up_cell = grid.torus_adj((agent.pos[0]+1, agent.pos[1]))
     down_cell = grid.torus_adj((agent.pos[0]-1, agent.pos[1]))
@@ -76,7 +105,7 @@ def possible_action_space(agent):
     return possible_actions
 
 
-def encode_state(grid): #TODO: Encode current agent location
+def encode_state(grid): 
     
     list_state = np.zeros((grid.width, grid.height))
     for cell in grid.coord_iter():
@@ -200,8 +229,21 @@ def select_e_greedy_action(Q, epsilon, possible_actions, state):
     probabilities = np.ones(nA) * epsilon / nA
        
     #### change the max action to the correct probability
-    # if a is the max of Q[s][a] TODO: fix this
-    max_action = np.argmax(Q[state])
+    
+    #max_action = np.argmax(Q[state]) #argmax gives the first if multiple so dont wan't that
+        
+    index_list = [-1]
+    maxval = -np.inf
+    print("Q state is ", Q[state]) 
+    for i, s in enumerate (Q[state]):
+        if s > maxval:
+            maxval = s
+            index_list = [i]
+        elif s == maxval:
+            index_list.append(i)
+            
+    print("max index list: ", index_list)
+    max_action = np.random.choice(i) # if there are multiple max, pick one
     
     print("max_action: ", max_action)
     
@@ -227,3 +269,9 @@ def select_e_greedy_action(Q, epsilon, possible_actions, state):
     
     
     return action
+    
+def max_action_with_choice(Q, state, possible_actions):
+    print("in max action with choice")
+    epsilon = .1
+    return select_e_greedy_action(Q, epsilon, possible_actions, state)
+    

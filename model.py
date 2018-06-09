@@ -156,21 +156,12 @@ class CHModel(Model):
         #print("the current score is ", self.score)
         
         # Update rewards of Monte Carlo agents
-        rewards_type = False # if rewards_type is true, use the actual current score, otherwise use number of cows in goal
+        rewards_type = True # if rewards_type is true, use the actual current score, otherwise use number of cows in goal
         for mcagent in self.mc_agents:
             if rewards_type:
                 mcagent.update_rewards(self.score)
             else:
                 mcagent.update_rewards(self.current_cow_count)
-##        if self.schedule.time < self.max_timesteps:
-##            self.schedule.step()
-##            self.update_score()
-##            #print("the current step is ", self.schedule.time)
-##            print(np.matrix(self.state))
-##            print("the current score is ", self.score)
-##            self.datacollector.collect(self)
-##        else:
-##            print("the final score is ", self.score)
 
     def update_score(self):
         self.current_cow_count = cow_methods.cows_in_goal(self, self.goalState)

@@ -67,7 +67,7 @@ cow_agents = 4
 plan_agents = 0
 monte_carlo_agents = 1
 td_agents = 0
-grid = CanvasGrid(agent_portrayal, 8, 8, 500, 500)
+grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 
 #nA = len(movement_control.possible_action_space)
 
@@ -79,5 +79,5 @@ grid = CanvasGrid(agent_portrayal, 8, 8, 500, 500)
 server = ModularServer(CHModel,
                        [grid],
                        "Cow Herding Model",
-                       {"width": 8, "height": 8,
+                       {"width": 10, "height": 10,
                         "random_n": 0, "cow_n": 4, "plan_n": 0, "mc_n": 0, "td_n": 0, "t_mc_n": 2})

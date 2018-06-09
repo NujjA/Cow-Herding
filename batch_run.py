@@ -3,8 +3,8 @@ import movement_control, rl_methods
 import numpy as np
 import dill
 
-episodes = 3000
-steps = 100
+episodes = 15000
+steps = 75
 
 random_agents = 0
 cow_agents = 4
@@ -18,7 +18,7 @@ MC_Q_values = None # Save Q values so MC agents can access each episode
 
 final_scores = []
 for episode in range(episodes):
-    model = CHModel(8, 8, random_n = random_agents, cow_n = cow_agents, plan_n = plan_agents, mc_n = monte_carlo_agents, td_n = td_agents, t_mc_n = trained_mc_agents, episode_number = episode, old_Q_values = MC_Q_values)
+    model = CHModel(10, 10, random_n = random_agents, cow_n = cow_agents, plan_n = plan_agents, mc_n = monte_carlo_agents, td_n = td_agents, t_mc_n = trained_mc_agents, episode_number = episode, old_Q_values = MC_Q_values)
     print("Episode ", episode)
     for i in range(steps):
         model.step()

@@ -14,6 +14,7 @@ class TrainedMonteCarloAgent(Agent):
         self.Q = Q_old # load previous episode Q table
         
         self.vision_range = vision
+        self.action = -1
 
 
     def step(self):
@@ -26,20 +27,22 @@ class TrainedMonteCarloAgent(Agent):
         possible_actions = rl_methods.possible_action_space(self)
 
         if self.state in self.Q:
-            action = max_action = np.argmax(self.Q[self.state])
-            print("The max action is ", action)
-            if action not in possible_actions:
-                action = random.choice(possible_actions)
+            self.action = rl_methods.max_action_with_choice(self.Q, self.state, possible_actions) #always a small chance of picking non_greedy to avoid loops
+            print("The max action is ", self.action)
+            if self.action not in possible_actions:
+                self.action = random.choice(possible_actions)
                 print("Max action not in possible actions, picking randomly")
         else:
-            action = random.choice(possible_actions)
+            self.action = random.choice(possible_actions)
             print("I havent seen this before, picking randomly")
             
         
-        self.move(action)
+        print("The action I choose is ", rl_methods.action_word(self.action))
+        self.move(self.action)
 
     def move(self,action):
         new_position = rl_methods.action_next_location(self, self.model.grid, action)
+        print("Old location ", self.pos, " new position ", new_position)
         self.model.grid.move_agent(self, new_position)
 
  #   def mc_action_selection(self, possible_steps):

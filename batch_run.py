@@ -3,7 +3,7 @@ import movement_control, rl_methods
 import numpy as np
 import dill
 
-episodes = 15000
+episodes = 20000
 steps = 75
 
 random_agents = 0

@@ -51,7 +51,7 @@ class CHModel(Model):
         
         # Monte Carlo Agent model save
         self.Q_table_sharing = True ## If true, agents share a Q table
-        self.vision_range = 2 # How far the MC agents can see
+        self.vision_range = 3 # How far the MC agents can see
         
         if old_Q_values: #load previous Q tables if they exist
             self.Q_values = old_Q_values

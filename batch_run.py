@@ -3,8 +3,8 @@ import movement_control, rl_methods
 import numpy as np
 import dill
 
-episodes = 50000
-steps = 75
+episodes = 20000
+steps = 50
 
 random_agents = 0
 cow_agents = 4

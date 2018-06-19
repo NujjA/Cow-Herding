@@ -34,6 +34,7 @@ class CHModel(Model):
         self.total_cow_count = 0.0
         self.current_cow_count = 0.0
         self.score = 0.0
+        self.previous_cow_count = 0.0
         
         # Save model for agent use
         self.wallLocations = [(1,5), (1,6), (1,7), (2,7), (3,7), (4,7), (5,7), (6,7), (6,6), (6,5)]
@@ -122,7 +123,7 @@ class CHModel(Model):
             self.grid.place_agent(m, cell_location)
         
         # Place trained monte carlo agents
-        # TODO: open/load trained Q table
+        # open/load trained Q table
         if (self.number_trained_mc_agents > 0):
             loaded_Q = None
             with open('mc_q_save.pkl', 'rb') as file:
@@ -156,14 +157,32 @@ class CHModel(Model):
         #print("the current score is ", self.score)
         
         # Update rewards of Monte Carlo agents
-        rewards_type = False # if rewards_type is true, use the actual current score, otherwise use number of cows in goal
+        
+        rewards_type = 3
+        # if rewards_type is 
+        ###1 use the actual current score
+        ###2 use number of cows in goal
+        ###3 cows in goal with penalty if cow leaves goal
+        
+        # how penalized do you want the agents to be?
+        penalty_modifier = 2.0
+        
         for mcagent in self.mc_agents:
-            if rewards_type:
+            if (rewards_type == 1):
                 mcagent.update_rewards(self.score)
-            else:
+            elif (rewards_type == 2):
                 mcagent.update_rewards(self.current_cow_count)
+            elif (rewards_type == 3):
+                penalty = 0
+                if (self.current_cow_count < self.previous_cow_count):
+                    pentalty = penalty_modifier * (self.previous_cow_count - self.current_cow_count)
+                mcagent.update_rewards(self.current_cow_count - penalty)
+            else:
+                printing("using default reward")
+                mcagent.update_rewards(self.score)
 
     def update_score(self):
+        self.previous_cow_count = self.current_cow_count
         self.current_cow_count = cow_methods.cows_in_goal(self, self.goalState)
         self.total_cow_count += self.current_cow_count
         print(self.total_cow_count, self.current_cow_count, self.schedule.time, " Episode: ", self.episode)

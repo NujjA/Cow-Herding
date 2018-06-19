@@ -28,7 +28,7 @@ class CHModel(Model):
         
         
         self.id_count = 0 #to assign each agent a unique ID
-        self.max_timesteps = 500 #max timesteps for each episode
+        #self.max_timesteps = 500 #max timesteps for each episode
         
         # To keep score
         self.total_cow_count = 0.0
@@ -51,7 +51,7 @@ class CHModel(Model):
         
         # Monte Carlo Agent model save
         self.Q_table_sharing = True ## If true, agents share a Q table
-        self.vision_range = 3 # How far the MC agents can see
+        self.vision_range = 2 # How far the MC agents can see
         
         if old_Q_values: #load previous Q tables if they exist
             self.Q_values = old_Q_values
@@ -156,7 +156,7 @@ class CHModel(Model):
         #print("the current score is ", self.score)
         
         # Update rewards of Monte Carlo agents
-        rewards_type = True # if rewards_type is true, use the actual current score, otherwise use number of cows in goal
+        rewards_type = False # if rewards_type is true, use the actual current score, otherwise use number of cows in goal
         for mcagent in self.mc_agents:
             if rewards_type:
                 mcagent.update_rewards(self.score)

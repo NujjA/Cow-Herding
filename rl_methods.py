@@ -272,6 +272,6 @@ def select_e_greedy_action(Q, epsilon, possible_actions, state):
     
 def max_action_with_choice(Q, state, possible_actions):
     print("in max action with choice")
-    epsilon = .1
+    epsilon = .001
     return select_e_greedy_action(Q, epsilon, possible_actions, state)
     

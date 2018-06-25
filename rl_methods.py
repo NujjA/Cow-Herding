@@ -38,7 +38,7 @@ def action_word(action):
     
     
 def action_next_location(agent, grid, action):
-    print("in action next location")
+    #print("in action next location")
     up_cell = grid.torus_adj((agent.pos[0]+1, agent.pos[1]))
     down_cell = grid.torus_adj((agent.pos[0]-1, agent.pos[1]))
     left_cell = grid.torus_adj((agent.pos[0], agent.pos[1]-1))
@@ -140,12 +140,15 @@ def encode_state_range(agent, vision_range) :
             list_y += 1
             list_x = 0
     
-    #distance = int(round(movement_control.get_distance(grid, agent.pos, agent.model.goalTarget)))
+    distance = int(round(movement_control.get_distance(grid, agent.pos, agent.model.goalTarget)))
+    print("distance is ", distance)
     state_tuple = [tuple(l) for l in list_state]
-    #return tuple([tuple(state_tuple), distance])
-    return tuple(state_tuple)            
+    #extra_information = (distance, agent.model.current_cow_count)
+    extra_information = (pos_x, pos_y)
+    #print(tuple([tuple(state_tuple), extra_information]))
+    return tuple([tuple(state_tuple), extra_information])
                 
-def grid_to_lists(grid): #TODO: changed name, is anything calling it? do i need agent location data?
+def grid_to_lists(grid): #TODO: Old method, unused
     list_state = np.zeros((grid.width, grid.height))
     for cell in grid.coord_iter():
         cell_content, x, y = cell
@@ -261,8 +264,8 @@ def select_e_greedy_action(Q, epsilon, possible_actions, state):
         action = np.random.choice(possible_actions)
         print("max action is not in possible actions, pick a random action from list")
 
-    print("possible actions: ", possible_actions)
-    print("probabilities: ", probabilities)
+    #print("possible actions: ", possible_actions)
+    #print("probabilities: ", probabilities)
     #print("prob sum: ", probabilities.sum())
     print("action: ", action)
 
@@ -272,6 +275,6 @@ def select_e_greedy_action(Q, epsilon, possible_actions, state):
     
 def max_action_with_choice(Q, state, possible_actions):
     print("in max action with choice")
-    epsilon = .001
+    epsilon = .00001
     return select_e_greedy_action(Q, epsilon, possible_actions, state)
     

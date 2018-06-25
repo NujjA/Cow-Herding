@@ -50,6 +50,15 @@ class CHModel(Model):
         self.number_trained_mc_agents = t_mc_n
         
         
+        # load pre-trained data to add to or make new Q tables for MC Agents
+        # set to false to make a new Q table
+        #loadpretrained = True
+        #if (loadpretrained and (not old_Q_values)):
+        #    print("loading pkl file")
+        #    with open('mc_q_save.pkl', 'rb') as file:
+        #        self.Q_values = dill.load(file)
+        
+        
         # Monte Carlo Agent model save
         self.Q_table_sharing = True ## If true, agents share a Q table
         self.vision_range = 2 # How far the MC agents can see
@@ -164,8 +173,12 @@ class CHModel(Model):
         ###2 use number of cows in goal
         ###3 cows in goal with penalty if cow leaves goal
         
-        # how penalized do you want the agents to be?
-        penalty_modifier = 2.0
+        # how penalized do you want the agents to be for letting cow escape?
+        penalty_modifier = 0.0
+        # how much of a bonus for getting cows to go in the goal?
+        bonus_modifier = 100.0
+        # bonus for keeping cows in goal
+        bonus_cows = 5.0
         
         for mcagent in self.mc_agents:
             if (rewards_type == 1):
@@ -173,10 +186,25 @@ class CHModel(Model):
             elif (rewards_type == 2):
                 mcagent.update_rewards(self.current_cow_count)
             elif (rewards_type == 3):
-                penalty = 0
+                penalty = 0.0
+                bonus = 0.0
+                no_cow_penalty = -1.0
                 if (self.current_cow_count < self.previous_cow_count):
-                    pentalty = penalty_modifier * (self.previous_cow_count - self.current_cow_count)
-                mcagent.update_rewards(self.current_cow_count - penalty)
+                    print("calculating penalty ESCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPE")
+                    cows_escaped = (float(self.previous_cow_count) - float(self.current_cow_count))
+                    #print("this many escaped: ", cows_escaped, ", modifier: ", penalty_modifier)
+                    penalty = penalty_modifier * cows_escaped
+                    #print("prev cows ", self.previous_cow_count,  ", cows ", self.current_cow_count,  ", penalty ", penalty)
+                if (self.current_cow_count > self.previous_cow_count):
+                    print("calculating penalty COWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW")
+                    cows_gained = (float(self.current_cow_count) - float(self.previous_cow_count))
+                    #print("this many escaped: ", cows_escaped, ", modifier: ", penalty_modifier)
+                    bonus = bonus_modifier * cows_gained
+                if (self.current_cow_count < self.number_cow_agents):
+                    penalty = penalty - (no_cow_penalty * (float(self.number_cow_agents) - float(self.current_cow_count)))
+                mcagent.update_rewards((self.current_cow_count * bonus_cows) - penalty + bonus)
+                print("current cow count: ", self.current_cow_count, ", penalty: ", penalty, ", bonus: ", bonus, ", no cow ")
+                print("total reward: ", (self.current_cow_count * bonus_cows) - penalty + bonus)
             else:
                 printing("using default reward")
                 mcagent.update_rewards(self.score)

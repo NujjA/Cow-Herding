@@ -3,9 +3,10 @@ import movement_control, rl_methods
 import numpy as np
 import dill
 
-episodes = 20000
+episodes = 60000
 steps = 50
 
+# Number of each type of agent to run
 random_agents = 0
 cow_agents = 4
 plan_agents = 0
@@ -33,15 +34,15 @@ for i, Q in enumerate(MC_Q_values):
 #            print(Q[s])    
 
 #print the final scores
-for ep, score in enumerate(final_scores):
-    print("Final score for episode ", ep, ": ", score)
+#for ep, score in enumerate(final_scores):
+#    print("Final score for episode ", ep, ": ", score)
 
 
-print("Average scores by 10")
-avg_scores = []
-for i in range(0, len(final_scores)-10, 10):
-    avg_scores.append(np.mean(final_scores[i: i+10]))
-print(avg_scores)
+#print("Average scores by 10")
+#avg_scores = []
+#for i in range(0, len(final_scores)-10, 10):
+#    avg_scores.append(np.mean(final_scores[i: i+10]))
+#print(avg_scores)
 
 # Save shared or first Q table for trained MC agent use
 if (monte_carlo_agents > 0) :

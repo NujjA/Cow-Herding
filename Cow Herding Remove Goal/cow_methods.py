@@ -60,6 +60,12 @@ def step_back(agent):
     for location in back_of_goal:
         if grid.is_cell_empty(location):
             possible_actions.append(location)
-        
+    
+    if(len(possible_actions) == 0):
+        front_of_goal = agent.model.front_of_goal
+        for location in front_of_goal:
+            if grid.is_cell_empty(location):
+                possible_actions.append(location)  
+            
     new_location = random.choice(possible_actions)
     agent.model.grid.move_agent(agent, new_location)

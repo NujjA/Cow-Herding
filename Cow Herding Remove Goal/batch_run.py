@@ -3,7 +3,7 @@ import movement_control, rl_methods
 import numpy as np
 import dill
 
-episodes = 60000
+episodes = 25000
 steps = 500
 
 # Number of each type of agent to run

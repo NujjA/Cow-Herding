@@ -40,6 +40,7 @@ class CHModel(Model):
         self.wallLocations = [(1,5), (1,6), (1,7), (2,7), (3,7), (4,7), (5,7), (6,7), (6,6), (6,5)]
         self.goalState = [(2,5), (3,5), (4,5), (5,5), (2,6), (3,6), (4,6), (5,6)]
         self.back_of_goal = [(2,6), (3,6), (4,6), (5,6)]
+        self.front_of_goal = [(2,5), (3,5), (4,5), (5,5)]
         self.goalTarget = (3,5) #corral "entrance" that plan agents herd towards
         self.state = None # encode state at each timestep
         
@@ -162,7 +163,7 @@ class CHModel(Model):
         # if a cow goes into the goal, give a huge bonus and stop the cow 
         if (cows_in_goal > self.previous_cow_count) :
             print("New cow in the goal:", cows_in_goal)
-            reward = 100
+            reward = 50
         else:
             reward = -1.0
 

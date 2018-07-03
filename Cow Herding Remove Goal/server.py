@@ -80,4 +80,4 @@ server = ModularServer(CHModel,
                        [grid],
                        "Cow Herding Model",
                        {"width": 10, "height": 10,
-                        "random_n": 0, "cow_n": 4, "plan_n": 0, "mc_n": 0, "td_n": 0, "t_mc_n": 2})
+                        "random_n": 0, "cow_n": 4, "plan_n": 2, "mc_n": 0, "td_n": 0, "t_mc_n": 0})

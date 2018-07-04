@@ -4,7 +4,7 @@ import csv, datetime
 # number of episodes
 episodes = 5000
 # number of steps per episode
-steps = 500
+steps = 300
 
 # number of agents
 random_agents = 2
@@ -25,11 +25,12 @@ for episode in range(episodes):
         # if the agents are able to herd the cows in the given number of timesteps, save the time finished
         if(model.done):
             final_random_times.append(i)
-    #save the final score
-    final_random_scores.append(model.score)
-    # if the agents were not able to herd the cows in the given number of timesteps, save the maximum time allowed
+            #save the final score
+            final_random_scores.append(model.score)
+    # if the agents were not able to herd the cows in the given number of timesteps, save the maximum time allowed and the end score
     if (not(model.done)):
         final_random_times.append(steps)
+        final_random_scores.append(model.score)
 
 # Collect times for plan_agents
 final_plan_scores = []

@@ -62,22 +62,19 @@ def agent_portrayal(agent):
 
     return portrayal
 
-#random_agents = 0
-#cow_agents = 4
-#plan_agents = 0
-#monte_carlo_agents = 1
+
+### Change number of agents here! ###
+random_agents = 0
+cow_agents = 4
+plan_agents = 2
+monte_carlo_agents_trained = 0 # Use pre-trained Q table
+monte_carlo_agents_learning = 0 # Only if you want to retrain the Q table
 #td_agents = 0
 grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 
-#nA = len(movement_control.possible_action_space)
-
-# Starting with new Q tables. Replace here for saved Q tables.
-#MC_Q_values = [] 
-#for agent in range(monte_carlo_agents):
-#    MC_Q_values.append(defaultdict(lambda: np.zeros(nA)))
 
 server = ModularServer(CHModel,
                        [grid],
                        "Cow Herding Model",
                        {"width": 10, "height": 10,
-                        "random_n": 0, "cow_n": 4, "plan_n": 2, "mc_n": 0, "td_n": 0, "t_mc_n": 0})
+                        "random_n": random_agents, "cow_n": cow_agents, "plan_n": plan_agents, "mc_n": monte_carlo_agents_learning, "td_n": 0, "t_mc_n": monte_carlo_agents_trained})

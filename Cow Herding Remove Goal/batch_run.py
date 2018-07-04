@@ -29,23 +29,7 @@ for episode in range(episodes):
     final_scores.append(movement_control.compute_score(model))
     MC_Q_values = model.get_new_Q_values()
 
-#print the final Q tables
-for i, Q in enumerate(MC_Q_values):
-        print("Q table ", i)
-#        for s in Q:
-#            print("next state")
-#            print(Q[s])    
 
-#print the final scores
-#for ep, score in enumerate(final_scores):
-#    print("Final score for episode ", ep, ": ", score)
-
-
-#print("Average scores by 10")
-#avg_scores = []
-#for i in range(0, len(final_scores)-10, 10):
-#    avg_scores.append(np.mean(final_scores[i: i+10]))
-#print(avg_scores)
 
 # Save shared or first Q table for trained MC agent use
 if (monte_carlo_agents > 0) :

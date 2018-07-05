@@ -2,9 +2,9 @@ from model import CHModel
 import csv, datetime
 
 # number of episodes
-episodes = 5000
+episodes = 3000
 # number of steps per episode
-steps = 300
+steps = 100
 
 # number of agents
 random_agents = 2
@@ -44,11 +44,12 @@ for episode in range(episodes):
         # if the agents are able to herd the cows in the given number of timesteps, save the time finished
         if(model.done):
             final_plan_times.append(i)
-    #save the final score
-    final_plan_scores.append(model.score)
+            #save the final score
+            final_plan_scores.append(model.score)
     # if the agents were not able to herd the cows in the given number of timesteps, save the maximum time allowed
     if (not(model.done)):
         final_plan_times.append(steps)
+        final_plan_scores.append(model.score)
 
 # Collect times for trained monte carlo agents
 final_mc_scores = []
@@ -62,12 +63,12 @@ for episode in range(episodes):
         # if the agents are able to herd the cows in the given number of timesteps, save the time finished
         if(model.done):
             final_mc_times.append(i)
-    #save the final score
-    final_mc_scores.append(model.score)
+            #save the final score
+            final_mc_scores.append(model.score)
     # if the agents were not able to herd the cows in the given number of timesteps, save the maximum time allowed
     if (not(model.done)):
         final_mc_times.append(steps)
-        
+        final_mc_scores.append(model.score)
         
 # Save collected data to CSV
 csv_name = datetime.datetime.now().strftime("%y_%m_%d_%H_%M") + "_save.csv"

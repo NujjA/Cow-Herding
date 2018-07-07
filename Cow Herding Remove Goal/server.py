@@ -65,13 +65,13 @@ def agent_portrayal(agent):
 
 ### Change number of agents here! ###
 random_agents = 0
-cow_agents = 4
 plan_agents = 2
 monte_carlo_agents_trained = 0 # Use pre-trained Q table
-monte_carlo_agents_learning = 0 # Only if you want to retrain the Q table
-#td_agents = 0
-grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 
+
+## monte_carlo_agents_learning = 0 # Only if you want to retrain the Q table
+grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
+cow_agents = 4
 
 server = ModularServer(CHModel,
                        [grid],
